@@ -1,0 +1,10 @@
+# These run on Linux (Codespace / VMs). CRLF line endings make bash fail with
+# "bad interpreter: /usr/bin/env bash^M", so keep them LF regardless of host.
+*.sh    text eol=lf
+*.js    text eol=lf
+*.ts    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+Dockerfile text eol=lf
