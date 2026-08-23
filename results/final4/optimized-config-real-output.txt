@@ -1,0 +1,78 @@
+﻿
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: steps.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 3m30s max duration (incl. graceful stop):
+              * steps: Up to 50 looping VUs for 3m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (0m01.0s), 01/50 VUs, 0 complete and 0 interrupted iterations
+steps   [   1% ] 01/50 VUs  0m01.0s/3m00.0s
+.
+.
+.
+running (3m03.0s), 03/50 VUs, 276 complete and 0 interrupted iterations
+steps ↓ [ 100% ] 13/50 VUs  3m0s
+
+
+  █ THRESHOLDS 
+
+    step_complete
+    ✓ 'p(95)<60000' p(95)=20.96s
+
+    step_payment_session
+    ✓ 'p(95)<60000' p(95)=2.01s
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 1116   6.072561/s
+    checks_succeeded...: 99.91% 1115 out of 1116
+    checks_failed......: 0.08%  1 out of 1116
+
+    ✓ list products 200
+    ✓ create cart 200
+    ✓ add line item 200
+    ✗ complete cart 200
+      ↳  99% — ✓ 278 / ✗ 1
+
+    CUSTOM
+    completed_checkouts............: 278    1.512699/s
+    step_add_item..................: avg=3.43s    min=480.35ms med=2.99s    max=14.74s p(90)=6.1s   p(95)=9.6s  
+    step_addresses.................: avg=2.55s    min=370.52ms med=2.17s    max=12.21s p(90)=4.88s  p(95)=7.14s 
+    step_browse....................: avg=1.17s    min=137.07ms med=1.01s    max=6.1s   p(90)=1.87s  p(95)=3.16s 
+    step_complete..................: avg=9.13s    min=33.27ms  med=7.92s    max=28.15s p(90)=15.57s p(95)=20.96s
+    step_create_cart...............: avg=2.29s    min=293.67ms med=1.87s    max=12.42s p(90)=3.98s  p(95)=6.3s  
+    step_payment_collection........: avg=1.22s    min=89ms     med=1.03s    max=6.98s  p(90)=2.39s  p(95)=3.13s 
+    step_payment_session...........: avg=756.78ms min=88.66ms  med=597.84ms max=5.74s  p(90)=1.35s  p(95)=2.01s 
+    step_shipping..................: avg=5.6s     min=754.78ms med=5.26s    max=21.7s  p(90)=8.49s  p(95)=15.23s
+
+    HTTP
+    http_req_duration..............: avg=3.05s    min=33.27ms  med=1.7s     max=28.15s p(90)=7.55s  p(95)=10.35s
+      { expected_response:true }...: avg=3.05s    min=88.66ms  med=1.7s     max=28.15s p(90)=7.55s  p(95)=10.35s
+    http_req_failed................: 0.03%  1 out of 2511
+    http_reqs......................: 2511   13.663262/s
+
+    EXECUTION
+    iteration_duration.............: avg=28.51s   min=8.56s    med=27.46s   max=1m1s   p(90)=40.28s p(95)=45.65s
+    iterations.....................: 279    1.51814/s
+    vus............................: 3      min=1         max=50
+    vus_max........................: 50     min=50        max=50
+
+    NETWORK
+    data_received..................: 34 MB  186 kB/s
+    data_sent......................: 822 kB 4.5 kB/s
+
+
+
+
+running (3m03.8s), 00/50 VUs, 279 complete and 0 interrupted iterations
+steps ✓ [ 100% ] 00/50 VUs  3m0s

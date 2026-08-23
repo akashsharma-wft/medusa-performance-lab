@@ -1,0 +1,35 @@
+=== sample 1 (15:12:42) ===
+mpl-postgres: CPU 47.05% MEM 90.42MiB / 7.463GiB
+mpl-redis-exporter: CPU 0.00% MEM 22.07MiB / 7.463GiB
+mpl-postgres-exporter: CPU 0.00% MEM 31.94MiB / 7.463GiB
+39228 702.5625 -1737486336
+
+
+=== sample 2 (15:13:40) ===
+mpl-postgres: CPU 50.34% MEM 88.66MiB / 7.463GiB
+mpl-redis-exporter: CPU 0.00% MEM 23.29MiB / 7.463GiB
+mpl-postgres-exporter: CPU 0.00% MEM 33.5MiB / 7.463GiB
+39228 791.109375 2080739328
+
+
+=== sample 3 (15:14:36) ===
+mpl-postgres: CPU 13.87% MEM 89.62MiB / 7.463GiB
+mpl-redis-exporter: CPU 0.00% MEM 21.95MiB / 7.463GiB
+mpl-postgres-exporter: CPU 0.00% MEM 30.57MiB / 7.463GiB
+39228 791.78125 1634156544
+
+
+=== sample 4 (15:15:32) ===
+mpl-postgres: CPU 59.25% MEM 97.76MiB / 7.463GiB
+mpl-redis-exporter: CPU 8.56% MEM 23.89MiB / 7.463GiB
+mpl-postgres-exporter: CPU 20.69% MEM 31.25MiB / 7.463GiB
+12104 812.234375 1120129024
+
+
+=== sample 5 (15:16:27) ===
+mpl-postgres: CPU 59.17% MEM 93.87MiB / 7.463GiB
+mpl-redis-exporter: CPU 0.00% MEM 22.64MiB / 7.463GiB
+mpl-postgres-exporter: CPU 0.00% MEM 32.2MiB / 7.463GiB
+12104 896.375  970706944
+
+

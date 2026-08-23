@@ -1,0 +1,105 @@
+name: medusa-performance-lab
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: mpl-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: medusa
+      POSTGRES_PASSWORD: medusa
+      POSTGRES_DB: medusa_perf
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medusa -d medusa_perf"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    container_name: mpl-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: mpl-postgres-exporter
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: "postgresql://medusa:medusa@postgres:5432/medusa_perf?sslmode=disable"
+    # note: exporter runs inside the compose network, so it still uses the
+    # container-internal port 5432 (only the host-side mapping moved to 5433)
+    ports:
+      - "9187:9187"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  redis_exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: mpl-redis-exporter
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    ports:
+      - "9121:9121"
+    depends_on:
+      - redis
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: mpl-cadvisor
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: mpl-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - promdata:/prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - postgres_exporter
+      - redis_exporter
+      - cadvisor
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: mpl-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - grafanadata:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  pgdata:
+  promdata:
+  grafanadata:

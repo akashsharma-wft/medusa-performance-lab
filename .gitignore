@@ -1,0 +1,24 @@
+# --- secrets -----------------------------------------------------------------
+.env
+*.env
+!k6/.env.k6.example
+medusa-backend/apps/backend/.env
+medusa-backend/apps/backend/.medusa/
+
+# --- dependencies / build ----------------------------------------------------
+node_modules/
+dist/
+.turbo/
+
+# --- oversized raw k6 dumps --------------------------------------------------
+# these are the full per-request streams, up to 192 MB; the *-summary.json
+# next to each one carries every number the blog actually cites
+results/final/stress-output.txt
+results/final/browse10k-output.txt
+results/final2/browse10k-output.txt
+
+# --- junk --------------------------------------------------------------------
+monitoring/nginx.conf;C
+
+# live k6 env (publishable key + seeded IDs) - use .env.k6.example
+k6/.env.k6

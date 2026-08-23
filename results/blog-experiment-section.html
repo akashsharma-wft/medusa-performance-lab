@@ -1,0 +1,58 @@
+<h2>Practical Experiment: What Actually Happened Under Load</h2>
+<p><strong>Status: measured results — replaces the "TBD" experiment section of the draft.</strong></p>
+
+<h3>Test Environment</h3>
+<table border="1" cellpadding="6"><tr><th>Component</th><th>Spec</th></tr>
+<tr><td>Host</td><td>AMD Ryzen 7 5800HS (8c/16t), 16GB RAM, Windows 11</td></tr>
+<tr><td>Medusa</td><td>v2.17.2, production build, Node 22</td></tr>
+<tr><td>Database</td><td>PostgreSQL 16 (Docker)</td></tr>
+<tr><td>Cache/Queue</td><td>Redis 7 (Docker)</td></tr>
+<tr><td>Monitoring</td><td>Prometheus + Grafana + exporters</td></tr>
+<tr><td>Load generator</td><td>k6 v2.1 (same host — CPU tracked to confirm not the bottleneck at reported tiers)</td></tr></table>
+<p>Catalog: 205 products; one deliberately low-stock item (5 units) for the oversell test. k6 drives the Store API through the full checkout flow (cart → items → address → shipping → payment → complete) — the same endpoints a Next.js storefront calls.</p>
+
+<h3>Act 1 — The default configuration collapses at 50 users</h3>
+<p>Medusa's zero-config defaults (single process, in-memory event bus/workflow engine/cache/locking, ~10 DB connections):</p>
+<table border="1" cellpadding="6"><tr><th>Metric</th><th>50 users</th><th>300 users ("Black Friday")</th></tr>
+<tr><td>p95 request latency</td><td>57.4s</td><td>60s (timeout)</td></tr>
+<tr><td>Request failure rate</td><td>5.2%</td><td>98.3%</td></tr>
+<tr><td>Completed checkouts (3–5 min window)</td><td>2</td><td><strong>0</strong></td></tr></table>
+<p style="background:#fff3cd;padding:10px;border:2px dashed #cc8800"><strong>[SCREENSHOT 1 HERE]</strong> Grafana dashboard during baseline collapse — set time range 14-Jul 15:00–15:20 IST. Show: Postgres connections capped ~10, commits/sec spike, flat Redis line (proof defaults never touch Redis).</p>
+<p>A checkout that takes ~1.5s for one user takes ~3 minutes under 50-user contention. The system doesn't crash — it queues until effectively unavailable (a health check during peak load took 103 seconds to answer).</p>
+
+<h3>Act 2 — Profiling contradicted the standard advice</h3>
+<p>The common wisdom says the database is the bottleneck. Measured: <strong>Postgres at ~50% CPU, the single Node.js process at ~150%</strong> (event loop saturated). pg_stat_statements later confirmed no slow queries exist — the hottest query averages 2.3ms; Medusa simply issues <em>many</em> small queries per checkout. Indexes were never the answer; the cost lives in the application layer.</p>
+
+<p style="background:#fff3cd;padding:10px;border:2px dashed #cc8800"><strong>[SCREENSHOT 2 HERE]</strong> Grafana during single-instance optimized runs — time range 15:40–15:55 IST. Show: Postgres CPU spiking to ~200%+ (bottleneck relocated to DB) and Redis ops/sec now ACTIVE vs flat in Screenshot 1.</p>
+<h3>Act 3 — Fixes that moved the bottleneck instead of removing it</h3>
+<ul>
+<li><strong>Redis modules + pool 40 (single instance):</strong> no throughput gain — the wider pool pushed Postgres to 220% CPU. App-layer cost still dominated.</li>
+<li><strong>3 API instances + worker behind containerized nginx:</strong> requests failed instantly — Docker Desktop's WSL2 network boundary collapsed under high connection counts, not Medusa. Replaced with a native Node load balancer.</li>
+<li><strong>3 instances × pool 40 = 120 connections vs Postgres's default max_connections=100:</strong> "FATAL: too many clients already." Scaling out the app multiplied connection demand past the DB ceiling — the textbook reason PgBouncer exists. Fixed with max_connections=300.</li>
+</ul>
+<p>Every fix relocated the bottleneck: app CPU → network layer → DB connection limit. Capacity engineering is chasing the bottleneck through every layer, not applying one trick.</p>
+
+<h3>Act 4 — Final topology results</h3>
+<p>Native LB → 3 Medusa API instances + 1 worker, all Redis-backed, tuned Postgres:</p>
+<table border="1" cellpadding="6"><tr><th>Tier</th><th>Default config</th><th>Optimized topology</th></tr>
+<tr><td>50 concurrent checkouts</td><td>2 completed, p95 57s</td><td><strong>36 completed (≈18x)</strong>, 4.9% errors</td></tr>
+<tr><td>300 concurrent checkouts</td><td>0 completed, 98% errors</td><td>~10–16 orders/min trickle; ~96% timeouts — beyond this host's total compute</td></tr>
+<tr><td>10,000 browsing users</td><td>—</td><td>Connection handling saturates the host; tier requires distributed load generation + real fleet</td></tr></table>
+<p style="background:#fff3cd;padding:10px;border:2px dashed #cc8800"><strong>[SCREENSHOT 3 HERE]</strong> Grafana during final load-balanced suite — time range 18:00–18:25 IST. Show: Postgres connections climbing toward 100+ (the max_connections wall) and all panels active simultaneously.</p>
+<p style="background:#fff3cd;padding:10px;border:2px dashed #cc8800"><strong>[SCREENSHOT 4 HERE]</strong> k6 terminal summary table — open <code>medusa-performance-lab/results/final2/baseline-output.txt</code> in VS Code, screenshot the TOTAL RESULTS block (36 completed iterations). Optionally side-by-side with <code>results/baseline/baseline-output.txt</code> (2 iterations).</p>
+<p><strong>Honest ceiling:</strong> with the load generator, 4 Node processes, Postgres, Redis and monitoring all sharing one 8-core laptop, ~50–100 concurrent full checkouts is this machine's realistic serving capacity. The optimizations multiplied capacity ~18x at the tier the host can sustain; higher tiers need more hardware, not more configuration.</p>
+
+<h3>Act 5 — The oversell test (correctness under stampede)</h3>
+<p>100 concurrent buyers vs 5 units of stock. Result: <strong>stock never went negative</strong> (5 stocked / 0 oversold). Under extreme saturation the system failed <em>safe</em> — slow, but never incorrect. Medusa's reservation + workflow compensation held.</p>
+
+<h3>Capacity planning: the arithmetic that scales</h3>
+<p>Black Friday readiness is not one big server. If one properly-configured instance-set sustains X checkouts/sec at acceptable p95, and the event forecast needs Y, deploy ≈ Y/X instance-sets behind load balancers, with a database tier sized for (instances × pool size) connections — via PgBouncer — and Redis shared for events/locks/workflows. The architecture we validated is the miniature of exactly that.</p>
+
+<h3>Key lessons</h3>
+<ul>
+<li>Medusa's dev defaults collapse at ~50 concurrent checkouts — production config is not optional.</li>
+<li>Measure before optimizing: the bottleneck was app CPU, not the database, contradicting the default advice.</li>
+<li>Scaling out moves bottlenecks downstream: watch the LB layer and DB connection limits (3×40 &gt; 100).</li>
+<li>Correctness held under all loads tested: zero oversells.</li>
+<li>Per-instance capacity × fleet size is how real Black Friday planning works; laptop-scale honest numbers beat fabricated big ones.</li>
+</ul>

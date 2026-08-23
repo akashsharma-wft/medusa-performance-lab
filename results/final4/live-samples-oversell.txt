@@ -1,0 +1,190 @@
+=== sample 1 (11:45:26) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.12M | total_commands_processed:62225 | instantaneous_ops_per_sec:19 | total_net_input_bytes:249488831 | keyspace_hits:15541 | keyspace_misses:10927
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=100810 rollbacks=0 | locks_waiting=0
+
+=== sample 2 (11:45:33) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.33M | total_commands_processed:62484 | instantaneous_ops_per_sec:123 | total_net_input_bytes:249520830 | keyspace_hits:15548 | keyspace_misses:11090
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=86 active=2 idle=84 | xact_commit=104049 rollbacks=0 | locks_waiting=0
+
+=== sample 3 (11:45:43) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.40M | total_commands_processed:64411 | instantaneous_ops_per_sec:146 | total_net_input_bytes:249764885 | keyspace_hits:15758 | keyspace_misses:11827
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=92 active=1 idle=91 | xact_commit=109700 rollbacks=0 | locks_waiting=0
+
+=== sample 4 (11:45:52) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:3.52M | total_commands_processed:67533 | instantaneous_ops_per_sec:946 | total_net_input_bytes:264827784 | keyspace_hits:16643 | keyspace_misses:12371
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=96 active=2 idle=84 | xact_commit=114138 rollbacks=22 | locks_waiting=0
+
+=== sample 5 (11:46:02) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.68M | total_commands_processed:72060 | instantaneous_ops_per_sec:228 | total_net_input_bytes:291742228 | keyspace_hits:17915 | keyspace_misses:12669
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=96 active=1 idle=95 | xact_commit=117207 rollbacks=29 | locks_waiting=0
+
+=== sample 6 (11:46:10) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.10M | total_commands_processed:72511 | instantaneous_ops_per_sec:4 | total_net_input_bytes:292479277 | keyspace_hits:17985 | keyspace_misses:12817
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=88 active=1 idle=87 | xact_commit=117417 rollbacks=29 | locks_waiting=0
+
+=== sample 7 (11:46:18) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.22M | total_commands_processed:72622 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292487522 | keyspace_hits:17999 | keyspace_misses:12855
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=72 active=1 idle=71 | xact_commit=117689 rollbacks=29 | locks_waiting=0
+
+=== sample 8 (11:46:25) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.13M | total_commands_processed:72680 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292491552 | keyspace_hits:18006 | keyspace_misses:12875
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=62 active=1 idle=61 | xact_commit=117751 rollbacks=29 | locks_waiting=0
+
+=== sample 9 (11:46:32) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.26M | total_commands_processed:72770 | instantaneous_ops_per_sec:20 | total_net_input_bytes:292498010 | keyspace_hits:18016 | keyspace_misses:12901
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=117842 rollbacks=29 | locks_waiting=0
+
+=== sample 10 (11:46:41) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.28M | total_commands_processed:72860 | instantaneous_ops_per_sec:24 | total_net_input_bytes:292504468 | keyspace_hits:18026 | keyspace_misses:12927
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=117875 rollbacks=29 | locks_waiting=0
+
+=== sample 11 (11:46:49) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.18M | total_commands_processed:72938 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292509841 | keyspace_hits:18034 | keyspace_misses:12959
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=117936 rollbacks=29 | locks_waiting=0
+
+=== sample 12 (11:46:56) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.11M | total_commands_processed:73004 | instantaneous_ops_per_sec:4 | total_net_input_bytes:292514110 | keyspace_hits:18041 | keyspace_misses:12979
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=117969 rollbacks=29 | locks_waiting=0
+
+=== sample 13 (11:47:03) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.24M | total_commands_processed:73086 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292520329 | keyspace_hits:18051 | keyspace_misses:13005
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118030 rollbacks=29 | locks_waiting=0
+
+=== sample 14 (11:47:10) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.13M | total_commands_processed:73143 | instantaneous_ops_per_sec:4 | total_net_input_bytes:292523914 | keyspace_hits:18055 | keyspace_misses:13025
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118063 rollbacks=29 | locks_waiting=0
+
+=== sample 15 (11:47:17) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.25M | total_commands_processed:73254 | instantaneous_ops_per_sec:15 | total_net_input_bytes:292532158 | keyspace_hits:18069 | keyspace_misses:13063
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118095 rollbacks=29 | locks_waiting=0
+
+=== sample 16 (11:47:24) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.16M | total_commands_processed:73312 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292536187 | keyspace_hits:18076 | keyspace_misses:13083
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118156 rollbacks=29 | locks_waiting=0
+
+=== sample 17 (11:47:31) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.29M | total_commands_processed:73402 | instantaneous_ops_per_sec:24 | total_net_input_bytes:292542644 | keyspace_hits:18086 | keyspace_misses:13109
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118189 rollbacks=29 | locks_waiting=0
+
+=== sample 18 (11:47:39) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.20M | total_commands_processed:73452 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292546004 | keyspace_hits:18090 | keyspace_misses:13129
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118254 rollbacks=29 | locks_waiting=0
+
+=== sample 19 (11:47:46) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.13M | total_commands_processed:73545 | instantaneous_ops_per_sec:21 | total_net_input_bytes:292552270 | keyspace_hits:18101 | keyspace_misses:13161
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118287 rollbacks=29 | locks_waiting=0
+
+=== sample 20 (11:47:53) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.23M | total_commands_processed:73628 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292558502 | keyspace_hits:18111 | keyspace_misses:13187
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118348 rollbacks=29 | locks_waiting=0
+
+=== sample 21 (11:48:00) ===
+[redis] connected_clients:37 | blocked_clients:4 | used_memory_human:2.15M | total_commands_processed:73683 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292562028 | keyspace_hits:18115 | keyspace_misses:13207
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118380 rollbacks=29 | locks_waiting=0
+
+=== sample 22 (11:48:07) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.23M | total_commands_processed:73768 | instantaneous_ops_per_sec:15 | total_net_input_bytes:292568319 | keyspace_hits:18125 | keyspace_misses:13233
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118413 rollbacks=29 | locks_waiting=0
+
+=== sample 23 (11:48:14) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.19M | total_commands_processed:73854 | instantaneous_ops_per_sec:17 | total_net_input_bytes:292574360 | keyspace_hits:18136 | keyspace_misses:13265
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118474 rollbacks=29 | locks_waiting=0
+
+=== sample 24 (11:48:21) ===
+[redis] connected_clients:36 | blocked_clients:1 | used_memory_human:2.19M | total_commands_processed:73923 | instantaneous_ops_per_sec:9 | total_net_input_bytes:292578628 | keyspace_hits:18143 | keyspace_misses:13285
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118507 rollbacks=29 | locks_waiting=0
+
+=== sample 25 (11:48:28) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.27M | total_commands_processed:73994 | instantaneous_ops_per_sec:0 | total_net_input_bytes:292584177 | keyspace_hits:18150 | keyspace_misses:13311
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118568 rollbacks=29 | locks_waiting=0
+
+=== sample 26 (11:48:36) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.18M | total_commands_processed:74059 | instantaneous_ops_per_sec:4 | total_net_input_bytes:292588431 | keyspace_hits:18157 | keyspace_misses:13331
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118602 rollbacks=29 | locks_waiting=0
+
+=== sample 27 (11:48:43) ===
+[redis] connected_clients:36 | blocked_clients:4 | used_memory_human:2.31M | total_commands_processed:74142 | instantaneous_ops_per_sec:20 | total_net_input_bytes:292594663 | keyspace_hits:18167 | keyspace_misses:13357
+[queue] bull:medusa-workflows wait=0 active=0 delayed=0 completed=0 failed=0
+[queue] bull:workflows-cleaner wait=0 active=0 delayed=1 completed=0 failed=0
+[queue] bull:medusa-workflows-jobs wait=0 active=0 delayed=0 completed=0 failed=0
+[pg] conns_total=10 active=1 idle=9 | xact_commit=118635 rollbacks=29 | locks_waiting=0
+
+=== sampler done (27 samples) ===
