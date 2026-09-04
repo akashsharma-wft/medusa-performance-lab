@@ -1,0 +1,8 @@
+# Host node_modules are built for the host OS; the image installs its own for Linux.
+**/node_modules
+**/.medusa
+**/dist
+**/.turbo
+
+results/
+.git/

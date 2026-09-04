@@ -1,18 +1,37 @@
-name: medusa-performance-lab
+# Medusa v2 Black Friday performance lab.
+#
+# Every service gets its own CPU cores and nothing else may use them
+# (`cpuset`), so the load generator can never steal cycles from the database,
+# and app instances can never steal from each other. That isolation is the
+# reason these numbers mean anything -- see README.md.
+#
+# Default cores assume a 16-thread host. Override in .env if yours differs.
+#
+#   Single instance:  docker compose up -d
+#   Full 5-node fleet: docker compose --profile cluster up -d
+#   Run a test:        docker compose run --rm k6 run /scripts/scale.js
+#
+name: medusa-perf-lab
 
 services:
   postgres:
     image: postgres:16
-    container_name: mpl-postgres
-    restart: unless-stopped
     environment:
       POSTGRES_USER: medusa
       POSTGRES_PASSWORD: medusa
       POSTGRES_DB: medusa_perf
-    ports:
-      - "5433:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    command:
+      - -c
+      - max_connections=300
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - pg_stat_statements.track=all
+    ports: ["5433:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    cpuset: "${PG_CPUS:-3,4}"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U medusa -d medusa_perf"]
       interval: 5s
@@ -21,85 +40,106 @@ services:
 
   redis:
     image: redis:7
-    container_name: mpl-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
+    command: ["--appendonly", "no"]
+    ports: ["6379:6379"]
+    cpuset: "${REDIS_CPUS:-5}"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  postgres_exporter:
-    image: prometheuscommunity/postgres-exporter:latest
-    container_name: mpl-postgres-exporter
-    restart: unless-stopped
+  # --- app tier -----------------------------------------------------------
+  # app1 has no profile: it's always available, and gets a host port so a
+  # single-instance run needs nothing else. app2-5 only start under the
+  # "cluster" profile, and traffic must go through the balancer at :9020
+  # once more than one instance is running.
+
+  app1: &app
+    build: { context: ., dockerfile: lab/Dockerfile.medusa }
+    depends_on: { postgres: { condition: service_healthy }, redis: { condition: service_healthy } }
+    environment: &app-env
+      DATABASE_URL: postgres://medusa:medusa@postgres:5432/medusa_perf
+      REDIS_URL: redis://redis:6379
+      DB_POOL_MAX: 40
+      DISABLE_OPTIMIZATIONS: "false"
+      MEDUSA_WORKER_MODE: shared
+      JWT_SECRET: ${JWT_SECRET:-labjwt}
+      COOKIE_SECRET: ${COOKIE_SECRET:-labcookie}
+      STORE_CORS: http://localhost:8000
+      ADMIN_CORS: http://localhost:9000
+      AUTH_CORS: http://localhost:9000
+    ports: ["9000:9000"]
+    cpuset: "${APP1_CPUS:-6,7}"
+
+  app2:
+    <<: *app
+    profiles: ["cluster"]
     environment:
-      DATA_SOURCE_NAME: "postgresql://medusa:medusa@postgres:5432/medusa_perf?sslmode=disable"
-    # note: exporter runs inside the compose network, so it still uses the
-    # container-internal port 5432 (only the host-side mapping moved to 5433)
-    ports:
-      - "9187:9187"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      <<: *app-env
+      MEDUSA_WORKER_MODE: server
+    ports: []
+    cpuset: "${APP2_CPUS:-8,9}"
 
-  redis_exporter:
-    image: oliver006/redis_exporter:latest
-    container_name: mpl-redis-exporter
-    restart: unless-stopped
+  app3:
+    <<: *app
+    profiles: ["cluster"]
     environment:
-      REDIS_ADDR: "redis://redis:6379"
-    ports:
-      - "9121:9121"
-    depends_on:
-      - redis
+      <<: *app-env
+      MEDUSA_WORKER_MODE: server
+    ports: []
+    cpuset: "${APP3_CPUS:-10,11}"
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: mpl-cadvisor
-    restart: unless-stopped
-    ports:
-      - "8085:8080"
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: mpl-prometheus
-    restart: unless-stopped
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - promdata:/prometheus
-    ports:
-      - "9090:9090"
-    depends_on:
-      - postgres_exporter
-      - redis_exporter
-      - cadvisor
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: mpl-grafana
-    restart: unless-stopped
+  app4:
+    <<: *app
+    profiles: ["cluster"]
     environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_AUTH_ANONYMOUS_ENABLED: "true"
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
-    ports:
-      - "3001:3000"
+      <<: *app-env
+      MEDUSA_WORKER_MODE: server
+    ports: []
+    cpuset: "${APP4_CPUS:-12,13}"
+
+  app5:
+    <<: *app
+    profiles: ["cluster"]
+    environment:
+      <<: *app-env
+      MEDUSA_WORKER_MODE: server
+    ports: []
+    cpuset: "${APP5_CPUS:-14,15}"
+
+  worker:
+    <<: *app
+    profiles: ["cluster"]
+    environment:
+      <<: *app-env
+      MEDUSA_WORKER_MODE: worker
+    ports: []
+    cpuset: "${LB_CPUS:-2}"
+
+  # Native Node round-robin proxy, not nginx: nginx in a container collapsed
+  # under high connection counts in earlier testing on this rig. See README.
+  lb:
+    image: node:22-bookworm-slim
+    profiles: ["cluster"]
+    working_dir: /app
+    volumes: ["./lab/lb.js:/app/lb.js:ro"]
+    command: ["node", "lb.js"]
+    environment:
+      TARGETS: app2:9000,app3:9000,app4:9000,app5:9000
+    ports: ["9020:9020"]
+    cpuset: "${LB_CPUS:-2}"
+    depends_on: [app2, app3, app4, app5]
+
+  # Not started by `up`; invoke with:
+  #   docker compose run --rm k6 run -e MEDUSA_URL=... /scripts/scale.js
+  k6:
+    image: grafana/k6:latest
+    profiles: ["test"]
     volumes:
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
-      - grafanadata:/var/lib/grafana
-    depends_on:
-      - prometheus
+      - "./k6:/scripts:ro"
+      - "./results:/results"
+    cpuset: "${K6_CPUS:-0,1}"
 
 volumes:
   pgdata:
-  promdata:
-  grafanadata:

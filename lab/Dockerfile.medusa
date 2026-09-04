@@ -1,0 +1,40 @@
+# Medusa as a container, so it reaches Postgres and Redis over Docker's internal
+# network instead of through Docker Desktop's Windows port proxy.
+#
+# Measured on this machine:
+#   host -> container : 4.61 ms per SELECT 1
+#   container-internal: 1.14 ms per SELECT 1
+# At ~424 queries per checkout that boundary was the single largest cost in the
+# whole benchmark, and it was invisible -- it looked like "Medusa is slow".
+FROM node:22-bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      python3 make g++ ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@10.6.5 --activate
+
+WORKDIR /app
+
+# Manifests first so dependency install caches independently of source changes.
+COPY medusa-backend/package.json medusa-backend/pnpm-lock.yaml medusa-backend/pnpm-workspace.yaml ./
+COPY medusa-backend/apps/backend/package.json ./apps/backend/
+
+RUN pnpm install --frozen-lockfile
+
+COPY medusa-backend/ ./
+
+# Rebuild inside the image: the host node_modules were installed for Windows,
+# and native modules would not load on Linux.
+RUN pnpm install --frozen-lockfile \
+    && cd apps/backend \
+    && pnpm exec medusa build
+
+WORKDIR /app/apps/backend/.medusa/server
+
+ENV NODE_ENV=production \
+    PORT=9000 \
+    DISABLE_MEDUSA_ADMIN=true
+
+EXPOSE 9000
+CMD ["node", "../../node_modules/@medusajs/cli/cli.js", "start"]
