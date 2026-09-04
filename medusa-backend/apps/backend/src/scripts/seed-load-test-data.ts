@@ -111,24 +111,29 @@ export default async function seedLoadTestData({
     },
   });
 
+  const oversellVariantId = oversellProducts[0].variants![0].id;
+  const oversellSku = "OVERSELL-TEST-1";
+
+  // Scoped to SKUs this script just created (LOADTEST-* and the oversell
+  // item) rather than every inventory_item in the database.
+  // createInventoryLevelsWorkflow throws "already exists" for any item that
+  // already has a level at this location -- it does NOT skip duplicates --
+  // and an unfiltered query also picks up whatever the base project seed
+  // (initial-data-seed.ts, run by `medusa db:migrate`) already created
+  // levels for, which collides on every fresh database.
   const { data: newInventoryItems } = await query.graph({
     entity: "inventory_item",
     fields: ["id", "sku"],
   });
 
-  const oversellVariantId = oversellProducts[0].variants![0].id;
-  const oversellSku = "OVERSELL-TEST-1";
-
   const levelsToCreate = newInventoryItems
-    .filter((item) => item.sku !== null)
+    .filter((item) => item.sku && (item.sku.startsWith("LOADTEST-") || item.sku === oversellSku))
     .map((item) => ({
       location_id: stockLocationId,
       inventory_item_id: item.id,
       stocked_quantity: item.sku === oversellSku ? LOW_STOCK_QTY : 1000000,
     }));
 
-  // createInventoryLevelsWorkflow skips items that already have a level for
-  // this location (e.g. from the initial demo seed) rather than erroring.
   await createInventoryLevelsWorkflow(container).run({
     input: { inventory_levels: levelsToCreate },
   });
