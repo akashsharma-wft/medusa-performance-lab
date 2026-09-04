@@ -26,9 +26,13 @@ the contention, not the software. See `docker-compose.yml` for the layout.
 
 ```bash
 cp .env.example .env        # adjust core counts if your machine isn't 16-thread
-docker compose build         # builds the Medusa image from lab/Dockerfile.medusa
+docker compose pull app1     # pulls the prebuilt image (codesofakash/mpl-medusa)
 docker compose up -d postgres redis
 ```
+
+Prefer to build from source instead (e.g. after changing `medusa-backend/`)?
+Run `docker compose build` — it produces the same image, tagged locally, and
+`up`/`run` will use that build instead of pulling.
 
 Wait for both to report healthy: `docker compose ps`.
 

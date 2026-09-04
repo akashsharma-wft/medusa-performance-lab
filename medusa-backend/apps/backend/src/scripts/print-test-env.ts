@@ -1,5 +1,6 @@
 import { MedusaContainer } from "@medusajs/framework"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { linkSalesChannelsToApiKeyWorkflow } from "@medusajs/medusa/core-flows"
 
 // Prints the four values k6 needs, read straight from THIS install.
 //
@@ -40,8 +41,8 @@ export default async function printTestEnv({
     })
     publishableKey = created.token
     if (channels[0]) {
-      await apiKeyModule.linkSalesChannelsToApiKey(created.id, {
-        add: [channels[0].id],
+      await linkSalesChannelsToApiKeyWorkflow(container).run({
+        input: { id: created.id, add: [channels[0].id] },
       })
     }
   }

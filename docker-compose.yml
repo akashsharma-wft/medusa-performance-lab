@@ -56,6 +56,7 @@ services:
   # once more than one instance is running.
 
   app1: &app
+    image: codesofakash/mpl-medusa:latest
     build: { context: ., dockerfile: lab/Dockerfile.medusa }
     depends_on: { postgres: { condition: service_healthy }, redis: { condition: service_healthy } }
     environment: &app-env
